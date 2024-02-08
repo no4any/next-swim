@@ -1,35 +1,43 @@
-export interface Swimmer {
-    mail: string, // E-Mail
-    name: string, // Name
-    prename: string, // Vorname
-    breakfast: boolean, // Möchte frühstück
-    distanceRating: boolean, // Möchte an der Anreiseentfernungswertung teilnehmen
-    city: string, // Stadt für Anreiseentfernungswertung
-    birthday: string, // Geburtstag für Alterswertung
-    teamStarter: boolean, // Ist Team starter
-    teamName: string, // Teamname
-}
+import { z } from "zod"
 
-export interface SwimmerSubscribed extends Swimmer {
-    optIn: boolean, // OptIn ob der User auch angenommen hat
-    subscriptionDate: Date // Anmeldedatum
-}
+export const SwimmerSchema = z.object({
+    mail: z.string().email(),
+    name: z.string().min(3),
+    prename: z.string().min(3),
+    breakfast: z.boolean(),
+    distanceRating: z.boolean(),
+    city: z.optional(z.string().min(3)),
+    birthday: z.string(),
+    teamStarter: z.boolean(),
+    teamName: z.optional(z.string().min(3))
+})
 
-export interface SwimmerRegistered extends SwimmerSubscribed {
-    registered: Date // Anmeldung abgeschlossen
-    bathingCap: BathingCap // Badekappe
-    counting: Array<LaneCountEntry> // Einträge der Bahnen
-    breakfastIsPayed: boolean, // Frühstück ist bezahlt
-}
+export const SwimmerSubscriptionSchema = SwimmerSchema.extend({
+    optIn: z.boolean(),
+    subscriptionDate: z.date()
+})
 
-export interface LaneCountEntry {
-    lane: number, // Bahn
-    isNight: boolean, // Ist Nachtwertung
-    count: number, // Anzahl der Bahnen
-    date: Date // Zeitpunkt an dem der Eintrag gemacht wurde
-}
+export const LaneCountEntrySchema = z.object({
+    lane: z.optional(z.number()),
+    isNight: z.boolean(),
+    count: z.number(),
+    date: z.date()
+})
 
-export interface BathingCap {
-    color: string, // Farbe der Badekappe
-    num: number // Nummer der Badekappe
-}
+export const BathingCapSchema = z.object({
+    color: z.string(),
+    num: z.number()
+})
+
+export const SwimmerRegisteredSchema = SwimmerSubscriptionSchema.extend({
+    registered: z.date(),
+    bathingCap: BathingCapSchema,
+    counting: z.array(LaneCountEntrySchema),
+    isBreakfastPayed: z.boolean()
+})
+
+export type Swimmer = z.infer<typeof SwimmerSchema>
+export type SwimmerSubscription = z.infer<typeof SwimmerSubscriptionSchema>
+export type LaneCountEntry = z.infer<typeof LaneCountEntrySchema>
+export type BathingCap = z.infer<typeof BathingCapSchema>
+export type SchwimmerRegistered = z.infer<typeof SwimmerRegisteredSchema>

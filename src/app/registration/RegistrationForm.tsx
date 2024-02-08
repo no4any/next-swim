@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { registerSwimmer } from "./actions"
+import { z } from "zod";
+import { SwimmerSchema } from "@/persistence/swimmer.model";
 
 export default function RegistrationForm() {
     const [mail, setMail] = useState("");
@@ -16,17 +18,18 @@ export default function RegistrationForm() {
 
     async function buttonClick() {
         try {
-            console.log(await registerSwimmer({
+            const swimmer = SwimmerSchema.parse({
                 name,
                 prename,
                 breakfast,
                 birthday,
-                city,
+                city: city || undefined,
                 distanceRating,
                 mail,
-                teamStarter: false,
-                teamName
-            }));
+                teamStarter,
+                teamName: teamName || undefined
+            })
+            console.log(await registerSwimmer(swimmer));
         } catch (e) {
             console.log("FEHLE!!!", e);
         }

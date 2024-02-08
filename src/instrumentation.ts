@@ -1,6 +1,5 @@
-import { setupMongoose } from "./persistence/setupMongoose";
+import { MONGO_CONNECTION_STRING } from "./env";
 
 export async function register() {
-    console.error("INSTRUMENTATION");
-    //await setupMongoose();
+    console.log("Mongodb", MONGO_CONNECTION_STRING)
 }

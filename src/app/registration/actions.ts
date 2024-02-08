@@ -1,11 +1,13 @@
 "use server"
 
-import { Swimmer } from "@/persistence/swimmer.model";
+import { getSwimmerCollection } from "@/persistence/mongo";
+import { Swimmer, SwimmerSchema } from "@/persistence/swimmer.model";
 
 export async function registerSwimmer(swimmer: Swimmer): Promise<any> {
-    console.log(swimmer);
+    const parsedSwimmer = SwimmerSchema.parse(swimmer);
+    (await getSwimmerCollection()).insertOne(parsedSwimmer);
     return {
-        msg: "Alles toll",
+        msg: "Added",
         swimmer
     }
 }
