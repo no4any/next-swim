@@ -1,23 +1,11 @@
 import { z } from "zod"
 
-export const SwimmerSchema = z.object({
-    mail: z.string().email(),
-    name: z.string().min(3),
-    prename: z.string().min(3),
-    breakfast: z.boolean(),
-    distanceRating: z.boolean(),
-    city: z.optional(z.string().min(3)),
-    birthday: z.string(),
-    teamStarter: z.boolean(),
-    teamName: z.optional(z.string().min(3))
-})
+export const SWIMMER_STATE_ANNOUNCED = "ANNOUNCED"
+export const SWIMMER_STATE_CONFIRMED = "CONFIRMED"
+export const SWIMMER_STATE_REGISTERED = "REGISTERED"
+export const SWIMMER_STATE_FINISHED = "FINISHED"
 
-export const SwimmerSubscriptionSchema = SwimmerSchema.extend({
-    optIn: z.boolean(),
-    subscriptionDate: z.date()
-})
-
-export const LaneCountEntrySchema = z.object({
+export const CountEntrySchema = z.object({
     lane: z.optional(z.number()),
     isNight: z.boolean(),
     count: z.number(),
@@ -29,15 +17,51 @@ export const BathingCapSchema = z.object({
     num: z.number()
 })
 
-export const SwimmerRegisteredSchema = SwimmerSubscriptionSchema.extend({
-    registered: z.date(),
-    bathingCap: BathingCapSchema,
-    counting: z.array(LaneCountEntrySchema),
-    isBreakfastPayed: z.boolean()
+export const RegistrationSchema = z.object({
+    id: z.number(),
+    cap: BathingCapSchema
 })
 
+export const SwimmerAnnouncedSchema = z.object({
+    mail: z.string().email(),
+    name: z.string().min(3),
+    prename: z.string().min(3),
+    breakfast: z.boolean(),
+    distanceRating: z.boolean(),
+    city: z.optional(z.string().min(3)),
+    birthday: z.string(),
+    teamName: z.optional(z.string().min(3)),
+    optIn: z.optional(z.boolean()),
+})
+
+export const SwimmerConfirmedSchema = SwimmerAnnouncedSchema.extend({
+    subscriptionDate: z.date(),
+})
+
+export const SwimmerRegisteredSchema = SwimmerConfirmedSchema.extend({
+    registrationDate: z.date(),
+    registration: RegistrationSchema,
+    counting: z.optional(z.array(CountEntrySchema)),
+    isBreakfastPayed: z.optional(z.boolean())
+})
+
+export const SwimmerFinishedSchema = SwimmerRegisteredSchema.extend({
+    finishingDate: z.date()
+})
+
+export const SwimmerSchema = z.discriminatedUnion("state", [
+    SwimmerAnnouncedSchema.extend({ state: z.literal(SWIMMER_STATE_ANNOUNCED) }),
+    SwimmerConfirmedSchema.extend({ state: z.literal(SWIMMER_STATE_CONFIRMED) }),
+    SwimmerRegisteredSchema.extend({ state: z.literal(SWIMMER_STATE_REGISTERED) }),
+    SwimmerFinishedSchema.extend({ state: z.literal(SWIMMER_STATE_FINISHED) })
+])
+
 export type Swimmer = z.infer<typeof SwimmerSchema>
-export type SwimmerSubscription = z.infer<typeof SwimmerSubscriptionSchema>
-export type LaneCountEntry = z.infer<typeof LaneCountEntrySchema>
+export type SwimmerAnnounced = z.infer<typeof SwimmerAnnouncedSchema>
+export type SwimmerConfirmed = z.infer<typeof SwimmerConfirmedSchema>
+export type SwimmerRegistered = z.infer<typeof SwimmerRegisteredSchema>
+export type SwimmerFinished = z.infer<typeof SwimmerFinishedSchema>
+
+export type CountEntry = z.infer<typeof CountEntrySchema>
 export type BathingCap = z.infer<typeof BathingCapSchema>
-export type SchwimmerRegistered = z.infer<typeof SwimmerRegisteredSchema>
+export type Registration = z.infer<typeof RegistrationSchema>

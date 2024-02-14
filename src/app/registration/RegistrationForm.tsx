@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { registerSwimmer } from "./actions"
-import { z } from "zod";
 import { SwimmerSchema } from "@/persistence/swimmer.model";
 
 export default function RegistrationForm() {
@@ -19,6 +18,7 @@ export default function RegistrationForm() {
     async function buttonClick() {
         try {
             const swimmer = SwimmerSchema.parse({
+                state: "ANNOUNCED",
                 name,
                 prename,
                 breakfast,
@@ -37,7 +37,7 @@ export default function RegistrationForm() {
 
     return <div className="registration">
         <h1>Anmeldung</h1>
-        <form className="form">
+        <form>
             <LabeledInputText value={prename} onChange={setPrename} name="prename" label="Vorname" />
             <LabeledInputText value={name} onChange={setName} name="name" label="Name" />
             <LabeledInputText value={mail} onChange={setMail} name="mail" label="E-Mailadresse" />
@@ -48,7 +48,7 @@ export default function RegistrationForm() {
             <LabeledInputBoolean value={teamStarter} onChange={setTeamStarter} name="teamStarter" label="Ich möchte in einem Team starten" />
             {teamStarter ? <LabeledInputText value={teamName} onChange={setTeamName} name="teamName" label="Name des Teams" /> : <></>}
         </form>
-        <button onClick={buttonClick}>Absenden</button>
+        <button type="button" className="btn btn-primary" onClick={buttonClick}>Absenden</button>
     </div>
 }
 
@@ -61,22 +61,30 @@ interface LabeledInputTextProps<T> {
 }
 
 function LabeledInputText({ value, onChange, name, label, id }: LabeledInputTextProps<string>) {
-    return <div className="input">
+    return <div className="form-floating mb-3">
+        <input
+            className="form-control"
+            type="text"
+            name={name}
+            value={value}
+            id={id || name}
+            placeholder={label}
+            onChange={(evnt) => onChange(evnt.target.value)}
+        />
         <label htmlFor={id || name}>{label}</label>
-        <input type="text" value={value} name={name} id={id || name} onChange={(evnt) => onChange(evnt.target.value)} />
     </div>
 }
 
 function LabeledInputBoolean({ value, onChange, name, label, id }: LabeledInputTextProps<boolean>) {
-    return <div className="input boolean">
-        <input type="checkbox" checked={value} name={name} id={id || name} onChange={(evnt) => onChange(evnt.target.checked)} />
-        <label htmlFor={id || name}>{label}</label>
+    return <div className="form-check mb-3">
+        <input className="form-check-input" type="checkbox" checked={value} name={name} id={id || name} onChange={(evnt) => onChange(evnt.target.checked)} />
+        <label className="form-check-label" htmlFor={id || name}>{label}</label>
     </div>
 }
 
 function LabeledInputDate({ value, onChange, name, label, id }: LabeledInputTextProps<string>) {
-    return <div className="input">
+    return <div className="mb-3">
         <label htmlFor={id || name}>{label}</label>
-        <input type="date" value={value} name={name} id={id || name} onChange={(evnt) => onChange(evnt.target.value)} />
+        <input type="date" className="form-control" value={value} name={name} id={id || name} onChange={(evnt) => onChange(evnt.target.value)} />
     </div>
 }
