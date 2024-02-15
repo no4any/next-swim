@@ -1,6 +1,16 @@
 import DefaultContainer from "@/components/DefaultContainer";
+import { logout } from "./actions";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { validateToken } from "@/logic/jwt";
 
-export default function BackendLayout({ children }: { children: React.ReactNode }) {
+export default async function BackendLayout({ children }: { children: React.ReactNode }) {
+    const userToken = cookies().get("userToken");
+
+    if(!await validateToken(userToken?.value)) {
+        redirect("/login")
+    }
+
     return <>
         <header>
             <nav className="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
@@ -18,7 +28,9 @@ export default function BackendLayout({ children }: { children: React.ReactNode 
                                 <a className="nav-link" href="#">Link</a>
                             </li>
                             <li className="nav-item">
-                                <a className="nav-link disabled" aria-disabled="true">Disabled</a>
+                                <form action={logout}>
+                                    <input type="submit" className="nav-link" aria-disabled="true" value="Logout" />
+                                </form>
                             </li>
                         </ul>
                     </div>
