@@ -1,8 +1,8 @@
-export default function BackendPage() {
+export default function RegisterPage() {
     return <div className="container-fluid">
         <div className="row">
             <div className="col">
-                <h1>Dashboard</h1>
+                <h1>Anmeldung</h1>
             </div>
         </div>
     </div>

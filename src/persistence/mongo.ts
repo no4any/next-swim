@@ -2,10 +2,10 @@ import { MONGO_CONNECTION_STRING, MONGO_DATABASE, MONGO_PASSWORD, MONGO_USERNAME
 import { Collection, Db, MongoClient } from "mongodb";
 import { Swimmer } from "./swimmer.model";
 
-const mongo:MongoClient | undefined = undefined;
+const mongo: MongoClient | undefined = undefined;
 
 export async function getMongo(): Promise<MongoClient> {
-    if(mongo) {
+    if (mongo) {
         return mongo;
     }
 
@@ -23,4 +23,8 @@ export async function getDB(): Promise<Db> {
 
 export async function getSwimmerCollection(): Promise<Collection<Swimmer>> {
     return (await getDB()).collection<Swimmer>("swimmer");
+}
+
+export async function getAllSwimmer(): Promise<Array<Swimmer>> {
+    return (await getSwimmerCollection()).find({}).toArray();
 }

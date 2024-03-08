@@ -1,5 +1,7 @@
 import { z } from "zod"
 
+export type SwimmerState = "ANNOUNCED" | "CONFIRMED" | "REGISTERED" | "FINISHED";
+
 export const SWIMMER_STATE_ANNOUNCED = "ANNOUNCED"
 export const SWIMMER_STATE_CONFIRMED = "CONFIRMED"
 export const SWIMMER_STATE_REGISTERED = "REGISTERED"
@@ -23,6 +25,7 @@ export const RegistrationSchema = z.object({
 })
 
 export const SwimmerAnnouncedSchema = z.object({
+    _id: z.optional(z.string()),
     mail: z.string().email(),
     name: z.string().min(3),
     prename: z.string().min(3),

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { registerSwimmer } from "./actions"
 import { SwimmerSchema } from "@/persistence/swimmer.model";
+import { Collapse } from "@/components/collapse/Collapse";
 
 export default function RegistrationForm() {
     const [mail, setMail] = useState("");
@@ -44,9 +45,13 @@ export default function RegistrationForm() {
             <LabeledInputDate value={birthday} onChange={setBirthday} name="birthday" label="Geburtstag" />
             <LabeledInputBoolean value={breakfast} onChange={setBreakfast} name="breakfast" label="Frühstück" />
             <LabeledInputBoolean value={distanceRating} onChange={setDistanceRating} name="distanceRating" label="An weiteste Anreise Wertung Teilnehmen" />
-            {distanceRating ? <LabeledInputText value={city} onChange={setCity} name="city" label="Wohnort" /> : <></>}
+            <Collapse show={distanceRating}>
+                <LabeledInputText value={city} onChange={setCity} name="city" label="Wohnort" />
+            </Collapse>
             <LabeledInputBoolean value={teamStarter} onChange={setTeamStarter} name="teamStarter" label="Ich möchte in einem Team starten" />
-            {teamStarter ? <LabeledInputText value={teamName} onChange={setTeamName} name="teamName" label="Name des Teams" /> : <></>}
+            <Collapse show={teamStarter}>
+                <LabeledInputText value={teamName} onChange={setTeamName} name="teamName" label="Name des Teams" />
+            </Collapse>
         </form>
         <button type="button" className="btn btn-primary" onClick={buttonClick}>Absenden</button>
     </div>
@@ -85,6 +90,6 @@ function LabeledInputBoolean({ value, onChange, name, label, id }: LabeledInputT
 function LabeledInputDate({ value, onChange, name, label, id }: LabeledInputTextProps<string>) {
     return <div className="mb-3">
         <label htmlFor={id || name}>{label}</label>
-        <input type="date" className="form-control" value={value} name={name} id={id || name} onChange={(evnt) => onChange(evnt.target.value)} />
+        <input type="date" className="form-control form-control-lg" value={value} name={name} id={id || name} onChange={(evnt) => onChange(evnt.target.value)} />
     </div>
 }
