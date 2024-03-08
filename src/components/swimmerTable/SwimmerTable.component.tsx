@@ -1,17 +1,16 @@
 import { Swimmer } from "@/persistence/swimmer.model";
 import { useId } from "react";
-import { SwimmerStateBadge } from "../swimmerStateBadge/SwimmerStateBadge.component";
 
 export function SwimmersTable({ swimmers }: { swimmers: Array<Swimmer> }): React.ReactNode {
-    return <table className="table">
+    return <table>
         <thead>
             <tr>
-                <th scope="col">Vorname</th>
-                <th scope="col">Nachname</th>
-                <th scope="col">Wohnort</th>
-                <th scope="col">Team</th>
-                <th scope="col">Frühstück</th>
-                <th scope="col">Anmeldestatus</th>
+                <th >Vorname</th>
+                <th >Nachname</th>
+                <th >Wohnort</th>
+                <th >Team</th>
+                <th >Frühstück</th>
+                <th >Anmeldestatus</th>
             </tr>
         </thead>
         <tbody>
@@ -21,7 +20,7 @@ export function SwimmersTable({ swimmers }: { swimmers: Array<Swimmer> }): React
                 <td>{swimmer.city}</td>
                 <td>{swimmer.teamName}</td>
                 <td>{swimmer.breakfast ? "Ja" : "Nein"}</td>
-                <td><SwimmerStateBadge state={swimmer.state} /></td>
+                <td>{swimmer.state}</td>
             </tr>)}
         </tbody>
     </table>
