@@ -1,9 +1,7 @@
-import { SwimmersTable } from "@/components/swimmerTable/SwimmerTable.component";
-
 export const revalidate = 0;
 export const dynamic = "force-dynamic";
 
-export default async function SwimmerPage() {
+export default async function SwimmerPage({ params }: { params: { id: string } }) {
     return <div>
         <div>
             <h1>
@@ -12,8 +10,9 @@ export default async function SwimmerPage() {
         </div>
         <div >
             <div>
-                <SwimmersTable />
+                {params.id}
             </div>
         </div>
     </div>
+
 }

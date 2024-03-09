@@ -1,6 +1,6 @@
 import { MONGO_CONNECTION_STRING, MONGO_DATABASE, MONGO_PASSWORD, MONGO_USERNAME } from "@/env";
-import { Collection, Db, MongoClient } from "mongodb";
-import { Swimmer } from "./swimmer.model";
+import { Collection, Db, DeleteResult, MongoClient, ObjectId } from "mongodb";
+import { Swimmer, SwimmerSchema } from "./swimmer.model";
 
 const mongo: MongoClient | undefined = undefined;
 
@@ -23,8 +23,4 @@ export async function getDB(): Promise<Db> {
 
 export async function getSwimmerCollection(): Promise<Collection<Swimmer>> {
     return (await getDB()).collection<Swimmer>("swimmer");
-}
-
-export async function getAllSwimmer(): Promise<Array<Swimmer>> {
-    return (await getSwimmerCollection()).find({}).toArray();
 }
